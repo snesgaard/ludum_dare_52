@@ -3,7 +3,7 @@ local Combat = Base()
 
 function Combat:deal_damage(other, damage)
     local health = other:get(nw.component.health)
-    if not health then return end
+    if not health or not damage then return end
     local real_damage = math.min(health, damage)
     local next_health = health - real_damage
     local info = {
@@ -15,8 +15,8 @@ function Combat:deal_damage(other, damage)
     self:emit("on_damage", info)
 end
 
-function Combat:is_alive(item)
-    local health = other:get(nw.component.health) or 0
+function Combat.is_alive(item)
+    local health = item:get(nw.component.health) or 0
     return 0 < health
 end
 

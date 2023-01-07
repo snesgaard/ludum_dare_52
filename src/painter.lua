@@ -19,8 +19,8 @@ local function sort_by_position(a, b)
 end
 
 local function sort_by_layer(a, b)
-    local layer_a = a:ensure(nw.component.layer)
-    local layer_b = b:ensure(nw.component.layer)
+    local layer_a = a:get(nw.component.layer) or 0
+    local layer_b = b:get(nw.component.layer) or 0
 
     if layer_a ~= layer_b then return layer_a < layer_b end
 

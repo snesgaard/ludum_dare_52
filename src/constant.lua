@@ -6,5 +6,6 @@ return {
     },
     layer = {
         ui = 2
-    }
+    },
+    scale = 3
 }

@@ -6,8 +6,12 @@ painter = require "painter"
 
 decorate(nw.component, require "component", true)
 
+Frame.slice_to_pos = Spatial.centerbottom
+
 local function collision_filter(ecs_world, item, other)
     local other_is_terrain = ecs_world:get(nw.component.is_terrain, other)
+
+    if ecs_world:get(nw.component.is_ghost, item) then return "cross" end
 
     return other_is_terrain and "slide" or "cross"
 end

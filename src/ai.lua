@@ -4,6 +4,21 @@ function ai.same_team(item, other)
     return item:ensure(nw.component.team) == other:ensure(nw.component.team)
 end
 
+function ai.opposing_team(item, other)
+    local item_team = item:get(nw.component.team)
+    local other_team = other:get(nw.component.team)
+
+    if item_team == constant.team.neutral then return false end
+    if other_team == constant.team.neutral then return false end
+
+    return other_team ~= item_team
+end
+
+function ai.turn_towards(ctx, from, to)
+    local v = ai.vector_between(from, to)
+    nw.system.collision(ctx):mirror_to(from, v.x < 0)
+end
+
 function ai.vector_between(from, to)
     return to:get(nw.component.position) - from:get(nw.component.position)
 end
@@ -17,6 +32,7 @@ function ai.find_nearest(item, filter)
         :get_component_table(nw.component.position)
         :keys()
         :map(function(id) return item:world():entity(id) end)
+        :filter(function(other) return other.id ~= item.id end)
         :filter(filter)
 
     local distances = others
@@ -25,6 +41,11 @@ function ai.find_nearest(item, filter)
     local closest = distances:argsort():head()
     if not closest then return nw.empty("No entity found") end
     return others[closest], distances[closest]
+end
+
+function ai.move_to(ctx, entity, move_x, speed)
+    local pos = entity:get(nw.component.position)
+    return ai.move_horizontal(ctx, entity, pos.x + move_x, speed)
 end
 
 function ai.move_horizontal(ctx, entity, target_x, speed)
@@ -46,6 +67,10 @@ function ai.move_horizontal(ctx, entity, target_x, speed)
     local function move_on_update(dt)
         local step = speed * dt
         local is_there = abs_x_to_target:peek() <= step
+        if 1 < abs_x_to_target:peek() then
+            local x = x_to_target:peek()
+            nw.system.collision(ctx):mirror_to(entity, x < 0)
+        end
         if is_there then
             local pos = entity:get(nw.component.position)
             nw.system.collision(ctx):move_to(entity, target_x, pos.y)
@@ -74,13 +99,16 @@ function ai.move_to_entity(ctx, item, other, speed, margin)
         local step = speed * dt
         local v = ai.vector_between(item, other)
         v.x = v.x + (v.x < 0 and margin or -margin)
-        local d = v:length()
+        local d = math.abs(v.x)
         local is_there = d <= step
+        if d > 0 then
+            nw.system.collision(ctx):mirror_to(item, v.x < 0)
+        end
         if is_there then
             nw.system.collision(ctx):move(item, v.x, 0)
         else
             local s = v.x < 0 and -step or step
-            nw.system.collision(ctx):move(item, step, 0)
+            nw.system.collision(ctx):move(item, s, 0)
         end
 
         return is_there
@@ -114,6 +142,12 @@ function ai.melee_hitbox(ctx, item, base_hitbox, lifetime, func, ...)
     end
 
     return hb
+end
+
+function ai.projectile(ctx, item, base_hitbox, lifetime, velocity, func, ...)
+    local velocity = item:get(nw.component.mirror) and vec2(-velocity.x, velocity.y) or velocity
+    return ai.melee_hitbox(ctx, item, base_hitbox, lifetime, func, ...)
+        :set(nw.component.velocity, velocity.x, velocity.y)
 end
 
 function ai.move(ctx, entity, target_position, speed)
