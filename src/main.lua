@@ -1,7 +1,13 @@
 nw = require "nodeworks"
+constant = require "constant"
+assemble = require "assemble"
+ai = require "ai"
+painter = require "painter"
+
+decorate(nw.component, require "component", true)
 
 local function collision_filter(ecs_world, item, other)
-    local other_is_terrain = other:get(nw.component.is_terrain)
+    local other_is_terrain = ecs_world:get(nw.component.is_terrain, other)
 
     return other_is_terrain and "slide" or "cross"
 end
