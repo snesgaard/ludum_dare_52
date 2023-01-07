@@ -4,7 +4,7 @@ local CollisionHelper = Base()
 
 function CollisionHelper:handle_damage(item, other)
     local damage = item:get(nw.component.damage)
-    if not damage and not ai.same_team(item, other) then return end
+    if not damage or ai.same_team(item, other) then return end
     nw.system.combat(self.world):deal_damage(other, damage)
 end
 

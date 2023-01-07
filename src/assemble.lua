@@ -140,7 +140,7 @@ function assemble.skeleton(entity, x, y)
         )
         :set(nw.component.gravity)
         :set(nw.component.decision, decision.skeleton)
-        :set(nw.component.team, constant.team.player)
+        :set(nw.component.team, constant.team.foe)
         :set(nw.component.drawable, nw.drawable.frame)
         :set(nw.component.frame, get_atlas("art/characters"):get_frame("skeleton/idle"))
         :set(nw.component.health, 10)
@@ -165,6 +165,20 @@ function assemble.mine(entity, x, y)
         )
         :set(nw.component.health, 20)
         :set(nw.component.team, constant.team.foe)
+        :set(nw.component.drawable, nw.drawable.body)
+end
+
+function assemble.player(entity, x, y)
+    entity
+        :assemble(
+            nw.system.collision().assemble.init_entity,
+            x, y, nw.component.hitbox(32, 32)
+        )
+        :set(nw.component.health, 20)
+        :assemble(nw.system.script().set, require "script.player")
+        :set(nw.component.gravity)
+        :set(nw.component.team, constant.team.player)
+        :set(nw.component.drawable, nw.drawable.body)
 end
 
 return assemble

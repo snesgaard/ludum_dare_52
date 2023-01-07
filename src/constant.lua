@@ -7,5 +7,8 @@ return {
     layer = {
         ui = 2
     },
+    id = {
+        player = "player"
+    },
     scale = 3
 }

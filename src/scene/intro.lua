@@ -9,16 +9,18 @@ return function(ctx)
 
     local skeleton = ecs_world:entity()
         :assemble(assemble.skeleton, 600, 100)
+        :set(nw.component.team, constant.team.player)
         :set(nw.component.health, 30)
+
+    local player = ecs_world:entity(constant.id.player)
+        :assemble(assemble.player, 100, 100)
 
     local camera = ecs_world:entity()
         :set(nw.component.camera)
-        :set(nw.component.target, skeleton.id)
+        :set(nw.component.target, constant.id.player)
         :set(nw.component.scale, constant.scale, constant.scale)
 
-    ecs_world:entity():assemble(assemble.skeleton, 1000, 200)
-        :set(nw.component.team, constant.team.foe)
-        :set(nw.component.color, 0, 1, 0)
+    --ecs_world:entity():assemble(assemble.skeleton, 1000, 200):set(nw.component.color, 0, 1, 0)
     ecs_world:entity():assemble(assemble.tile, 0, 200, 1400, 200)
     ecs_world:entity():assemble(assemble.mine, 400, 200)
 
@@ -41,7 +43,6 @@ return function(ctx)
         for _, _  in ipairs(spawn:pop()) do
             local x = love.math.random(100, 1000)
             ecs_world:entity():assemble(assemble.skeleton, x, 200)
-                :set(nw.component.team, constant.team.foe)
                 :set(nw.component.color, 0, 1, 0)
         end
         for _, _ in ipairs(draw:pop()) do

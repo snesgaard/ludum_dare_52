@@ -125,6 +125,7 @@ end
 
 function ai.melee_hitbox(ctx, item, base_hitbox, lifetime, func, ...)
     local pos = item:get(nw.component.position)
+    print("team", item:get(nw.component.team))
     local hb = item:world():entity()
         :set(nw.component.mirror, item:get(nw.component.mirror))
         :set(nw.component.team, item:get(nw.component.team))
