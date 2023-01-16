@@ -86,9 +86,12 @@ function ai.move_horizontal(ctx, entity, target_x, speed)
         return is_done or move_on_update(dt)
     end
 
-    return ctx:spin(function()
+    ctx:spin(function()
         return update:pop():reduce(move_reductor, false)
     end)
+
+    print("done move")
+    return
 end
 
 function ai.move_to_entity(ctx, item, other, speed, margin)

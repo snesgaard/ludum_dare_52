@@ -58,10 +58,6 @@ local function attack_task(ctx, entity, other)
             entity:set(nw.component.frame, value.frame)
         end)
     player:spin(ctx)
-    --entity:set(
---        nw.component.frame,
---        get_atlas("art/characters"):get_frame("skeleton/claw_action")
---    )
     ai.melee_hitbox(ctx, entity, spatial(50, -20, 10, 10), 0.2, damage_assemble)
     ai.wait(ctx, love.math.random(3, 5) / 10.0)
     entity:set(
@@ -128,8 +124,8 @@ local skeleton = {}
 function skeleton.should_decide(entity)
     local task = entity:get(nw.component.task)
     if not task or not task:is_alive() then return true end
-    local should_die = not nw.system.combat().is_alive(entity) and task:func() ~= dead_task
-    return task:func() == ai.move_horizontal or should_die
+    local should_die = not nw.system.combat().is_alive(entity) and task.system ~= dead_task
+    return task.system == ai.move_horizontal or should_die
 end
 
 function assemble.skeleton(entity, x, y)
@@ -169,16 +165,18 @@ function assemble.mine(entity, x, y)
 end
 
 function assemble.player(entity, x, y)
+    local decision = require "script.player"
     entity
         :assemble(
             nw.system.collision().assemble.init_entity,
             x, y, nw.component.hitbox(32, 32)
         )
         :set(nw.component.health, 20)
-        :assemble(nw.system.script().set, require "script.player")
+        :set(nw.component.decision, decision.decision)
+        :set(nw.component.should_decide, decision.should_decide)
         :set(nw.component.gravity)
         :set(nw.component.team, constant.team.player)
-        :set(nw.component.drawable, nw.drawable.body)
+        :set(nw.component.drawable, nw.drawable.frame)
 end
 
 return assemble

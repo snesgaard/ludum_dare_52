@@ -3,16 +3,21 @@ local system = {}
 nw.system.collision_helper = require "system.collision_helper"
 nw.system.combat = require "system.combat"
 nw.system.damage_number = require "system.damage_number"
+nw.system.input = require "system.input"
+nw.system.animation = require "system.animation"
 
 system.system = list(
+    nw.system.animation,
     nw.system.damage_number,
     nw.system.timer,
     nw.system.motion,
-    nw.system.camera,
+    nw.system.follow,
+    nw.system.input,
     nw.system.combat,
     nw.system.collision_helper,
     nw.system.script,
-    nw.system.decision
+    nw.system.decision,
+    nw.system.camera
 )
 
 local function observables(sys, ctx)

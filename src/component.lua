@@ -16,4 +16,8 @@ function component.is_ghost() return true end
 
 function component.hit_registry(hr) return hr or dict() end
 
+function component.invincible(v) return true end
+
+function component.dont_interrupt() return true end
+
 return component

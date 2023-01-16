@@ -17,7 +17,7 @@ return function(ctx)
 
     local camera = ecs_world:entity()
         :set(nw.component.camera)
-        :set(nw.component.target, constant.id.player)
+        :set(nw.component.target, player.id)
         :set(nw.component.scale, constant.scale, constant.scale)
 
     --ecs_world:entity():assemble(assemble.skeleton, 1000, 200):set(nw.component.color, 0, 1, 0)
@@ -35,7 +35,7 @@ return function(ctx)
 
     local draw_bump = ctx:listen("keypressed")
         :filter(function(d) return d == "d" end)
-        :reduce(function(state) return not state end)
+        :reduce(function(state) return not state end, true)
         :latest()
 
     ctx:spin(function()

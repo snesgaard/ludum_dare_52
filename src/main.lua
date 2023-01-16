@@ -29,7 +29,7 @@ function love.keypressed(key, scancode, isrepeat)
 end
 
 function love.keyreleased(key)
-    world:emit("keyreleased", key)
+    world:emit("keyreleased", key):spin()
 end
 
 function love.update(dt)
